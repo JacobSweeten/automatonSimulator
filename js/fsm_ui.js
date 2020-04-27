@@ -1,3 +1,28 @@
+/*
+The MIT License (MIT)
+
+Original work Copyright (c) 2015 Kyle Dickerson
+Modified work Copyright 2020 Jacob Sweeten
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
 var fsm = (function() {
 	var self = null;
 	var delegate = null;
@@ -330,10 +355,10 @@ var fsm = (function() {
 			jsPlumb.detach(connection);
 		},
 
-		test: function(input) {
+		test: function(input, requireEmptyStack) {
 			if ($.type(input) === 'string') {
 				$('#testResult').html('Testing...')
-				var accepts = delegate.fsm().accepts(input);
+				var accepts = delegate.fsm().accepts(input, requireEmptyStack);
 				$('#testResult').html(accepts ? 'Accepted' : 'Rejected').effect('highlight', {color: accepts ? '#bfb' : '#fbb'}, 1000);
 			} else {
 				$('#resultConsole').empty();
@@ -344,10 +369,10 @@ var fsm = (function() {
 					entry.removeClass('pending').addClass(result).attr('title', result).append(' -- ' + result);
 				};
 				$.each(input.accept, function(index, string) {
-					updateEntry((delegate.fsm().accepts(string) ? 'Pass' : 'Fail'), makePendingEntry(string, 'Accept'));
+					updateEntry((delegate.fsm().accepts(string, requireEmptyStack) ? 'Pass' : 'Fail'), makePendingEntry(string, 'Accept'));
 				});
 				$.each(input.reject, function(index, string) {
-					updateEntry((delegate.fsm().accepts(string) ? 'Fail' : 'Pass'), makePendingEntry(string, 'Reject'));
+					updateEntry((delegate.fsm().accepts(string, requireEmptyStack) ? 'Fail' : 'Pass'), makePendingEntry(string, 'Reject'));
 				});
 				$('#bulkResultHeader').effect('highlight', {color: '#add'}, 1000);
 			}

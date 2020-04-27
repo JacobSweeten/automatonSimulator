@@ -1,3 +1,28 @@
+/*
+The MIT License (MIT)
+
+Original work Copyright (c) 2015 Kyle Dickerson
+Modified work Copyright 2020 Jacob Sweeten
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
 function PDA(useDefaults) {
   "use strict";
   this.transitions = {}; // state -> inputChar -> stackPopChar -> stateStackPushCharPairs {state:'', stackPushChar:''}
@@ -10,7 +35,8 @@ function PDA(useDefaults) {
     inputLength: 0,
     stateStackPairs: [],
     status: null,
-    nextStep: null
+    nextStep: null,
+    requireEmptyStack: false
   };
 }
 
@@ -166,8 +192,8 @@ PDA.prototype.removeAcceptState = function(state) {
   return this;
 };
 
-PDA.prototype.accepts = function(input) {
-  var _status = this.stepInit(input);
+PDA.prototype.accepts = function(input, requireEmptyStack) {
+  var _status = this.stepInit(input, requireEmptyStack);
   while (_status === 'Active') {_status = this.step();}
   return _status === 'Accept';
 };
@@ -190,13 +216,14 @@ PDA.prototype.status = function() {
   };
 };
 
-PDA.prototype.stepInit = function(input) {
+PDA.prototype.stepInit = function(input, requireEmptyStack) {
   this.processor.input = input;
   this.processor.inputLength = this.processor.input.length;
   this.processor.inputIndex = 0;
   this.processor.stateStackPairs = [{state:this.startState, stack:[]}];
   this.processor.status = 'Active';
   this.processor.nextStep = 'epsilons';
+  this.processor.requireEmptyStack = requireEmptyStack;
   return this.updateStatus();
 };
 
@@ -246,7 +273,7 @@ PDA.prototype.updateStatus = function() {
   }
   if (self.processor.inputIndex === self.processor.inputLength) {
    $.each(self.processor.stateStackPairs, function(index, ssp) {
-      if (self.acceptStates.indexOf(ssp.state) >= 0) {
+      if (self.acceptStates.indexOf(ssp.state) >= 0 && (!self.processor.requireEmptyStack || ssp.stack.length === 0)) {
         self.processor.status = 'Accept';
         return false; // break the iteration
       }

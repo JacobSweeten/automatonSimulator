@@ -1,3 +1,28 @@
+<!--
+The MIT License (MIT)
+
+Original work Copyright (c) 2015 Kyle Dickerson
+Modified work Copyright 2020 Jacob Sweeten
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-->
 <!DOCTYPE HTML>
 <html>
   <head>
@@ -22,16 +47,20 @@
       <label>Test / Debug:</label>
       <input id="testString" type="text" value="" /><br />
       <div style="text-align:center;">
-        <button id="testBtn" onclick="fsm.test($('#testString').val());" class="image" title="Test"><img src="images/empty.png" /></button>
+        <button id="testBtn" onclick="fsm.test($('#testString').val(), $('#requireEmptyStack').is(':checked'));" class="image" title="Test"><img src="images/empty.png" /></button>
         <button id="stopBtn" onclick="fsm.debugStop();" disabled="disabled" class="image" title="Stop Debug"><img src="images/empty.png" /></button>
         <button id="debugBtn" onclick="fsm.debug($('#testString').val());" class="image" title="Start/Step Debug"><img src="images/empty.png" /></button>
+        <br>
+        <br>
+        <input id="requireEmptyStack" type="checkbox">
+        <label for="requireEmptyStack">Require Empty Stack</label>
       </div>
       <div id="testResult">&nbsp;</div>
 
       <hr />
       <h5>
         Bulk Testing
-        <button id="bulkTestBtn" class="image" style="margin-left:15px;" onclick="fsm.test({accept:$('#acceptStrings').val().split('\n'), reject:$('#rejectStrings').val().split('\n')});" title="Run Bulk Tests"><img src="images/empty.png" /></button>
+        <button id="bulkTestBtn" class="image" style="margin-left:15px;" onclick="fsm.test({accept:$('#acceptStrings').val().split('\n'), reject:$('#rejectStrings').val().split('\n')}, $('#requireEmptyStack').is(':checked'));" title="Run Bulk Tests"><img src="images/empty.png" /></button>
       </h5>
       <label>Accept (one per line):</label>
       <textarea id="acceptStrings" style="margin-bottom:5px;"></textarea>
@@ -124,7 +153,7 @@
 				_paq.push(["setSiteId", "1"]);
 				var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
 				g.defer=true; g.async=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);
-			})();
+      })();
 		</script>
 		<!-- End Piwik Code -->
   </body>
